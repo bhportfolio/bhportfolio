@@ -1,0 +1,84 @@
+# Yellow Pages Web Scraper
+
+from bs4 import BeautifulSoup, SoupStrainer
+import requests
+import pandas as pd
+
+# Insert URL of wanted category and location. This example if for Italian Restaurants located in Texas.
+URL = 'https://www.yellowpages.com/search?search_terms=Italian%20Restaurants&geo_location_terms=TX&page='
+
+# Create empty lists to append data
+data = []
+data_columns = ['name', 'street_adr', 'locality', 'phone_number','website']      
+emaildata = []
+email_columns = ['email']#, 'street_adr', 'locality', 'phone_number','website', 'email']      
+description_data = []
+description_columns = ['Description']
+
+# Webscrapping the data 
+for page in range(1,105): #change range based on the pages needed to be scraped.
+    session = requests.Session()
+    req = session.get(URL+str(page))
+    soup = BeautifulSoup(req.text, 'lxml' ) # 'html.parser'  ,  'lxml'
+    lists = soup.find_all('div', class_ =  'result')
+    
+    for list in lists:
+            name_data = str(list.find('a', class_ = 'business-name'))
+            name = name_data[name_data.find('n>')+2:name_data.find('</span>')]
+            location_data = str(list.find('div', class_= 'adr'))
+            street_adr = location_data[location_data.find('s">')+3:location_data
+                                .find('</di')]
+            locality = location_data[location_data.find('ocality">')+9:location_data
+                                .find('</div></div>')]
+            phone_number_data = str(list.find('div', class_= 'phones phone primary'))
+            phone_number = phone_number_data[phone_number_data.find('primary">')+9
+                           :phone_number_data.find('</div')]
+            open_status_data = str(list.find('div', class_= 'open-status open'))
+            open_status = open_status_data[open_status_data.find('/use></svg>')+11
+                                       :open_status_data.find('</div>')]
+            website_data = str(list.find('a', class_= 'track-visit-website', href=True))
+            website = website_data[website_data.find('dku":')+6:website_data.find(',"FL":')]
+            # Print test to check data
+            info = [name ,street_adr,locality,phone_number,open_status, website]
+            print(info)
+            
+            # Find link to direct page to get email address
+            links_data = str(list.find('a', class_ = 'business-name'))
+            links_data2 = links_data[links_data.find('href="')+7:links_data.find('" rel=')]
+            links = 'https://www.yellowpages.com' + str(list.find('a', 
+                              class_ = 'business-name', href =True).get('href'))
+            data.append([name, street_adr, locality, phone_number, website] )
+            
+            # Iterate through each link to get email address and company description
+            page2 = requests.get(links)
+            soup = BeautifulSoup(page2.text, 'html.parser')
+            links2  = soup.find_all('div', id  =  'main-content')
+            for link in links2:
+                        email_data = str(link.find('a', class_= 'email-business', href =True))
+                        email = email_data[email_data.find('href="')+6:email_data.find('" rel=')]
+                        general_info_data = str(link.find('dd', class_ ='general-info'))
+                        general_info = general_info_data[general_info_data.find
+                                ('<dd class="general-info">')+25:
+                                                         general_info_data.find('</dd>')]
+                        info2 = [ general_info]
+                        emaildata.append(email)
+                        description_data.append(general_info)
+                        #print(info2)
+
+# Convert appended data into DataFrames
+df1 = pd.DataFrame(data, columns=data_columns)
+df2 = pd.DataFrame(dfemaildata, columns=email_columns)
+df3 = pd.DataFrame(description_data, columns=description_columns)
+
+# Create a New Excel Workbook to Export Data 
+with pd.ExcelWriter('Restaurant_Leads.xlsx') as writer:
+   df1.to_excel(writer, sheet_name = 'Leads')
+   df2.to_excel(writer, sheet_name = 'Leads', startcol = 10)
+   df3.to_excel(writer, sheet_name = 'Leads', startcol = 12)
+   
+print('Excel Workbook Created')
+
+
+
+
+
