@@ -1,0 +1,66 @@
+# Libraries
+import tweepy
+import configparser as config
+import pandas as pd
+import time
+
+# Twitter API Credentials
+api_key = ''
+consumer_key = ''
+api_key_secret = ''
+consumer_secret = ''
+bearer_token = ''
+access_token = ''
+access_token_secret = ''
+
+# Connect to Twitter API
+client = tweepy.Client(bearer_token, api_key, api_key_secret, access_token,
+                       access_token_secret)
+
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret) 
+auth.set_access_token(access_token, access_token_secret)
+api= tweepy.API(auth, wait_on_rate_limit =True )
+
+# search users
+keywords =  ' ' 
+limit= 100
+
+tweets = tweepy.Cursor(api.search_users, q=keywords, count=100, 
+                       tweet_mode='extended').items(limit)
+
+# Create List for DataFrame
+data = []
+columns = ['User','User ID', 'User Description','Protected', 'Location',
+           'Language', 'Verified', 'Followers', 'Friends', 'Listed Count',
+           'Notifications', 'URL', 'Entities'] 
+           
+for tweet in tweets:
+    data.append([tweet.screen_name, tweet.id, tweet.description,
+                 tweet.protected, tweet.location, tweet.lang, tweet.verified,
+                 tweet.followers_count, tweet.friends_count, tweet.listed_count,
+                 tweet.notifications, tweet.url, tweet.entities])
+
+df = pd.DataFrame(data, columns=columns)
+print(df)
+
+# Create a New Excel Workbook for data
+with pd.ExcelWriter('twitter_data.xlsx') as writer:
+   df.to_excel(writer, sheet_name = 'data')
+   
+print('Excel Workbook Created')
+
+# Send Message to Users
+
+# Import Users from Excel File
+df2 = pd.read_excel('path', sheet_name = 'data') 
+
+# Message content
+text = ' ' 
+
+# Function for sending messages
+for ids in df2['User ID']:
+    try:
+        message = api.send_direct_message(recipient_id= ids , text = text)    
+        time.sleep(3)
+    except:
+        pass
