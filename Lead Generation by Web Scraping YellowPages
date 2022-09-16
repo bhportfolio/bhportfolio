@@ -67,7 +67,7 @@ for page in range(1,105): #change range based on the pages needed to be scraped.
 
 # Convert appended data into DataFrames
 df1 = pd.DataFrame(data, columns=data_columns)
-df2 = pd.DataFrame(dfemaildata, columns=email_columns)
+df2 = pd.DataFrame(emaildata, columns=email_columns)
 df3 = pd.DataFrame(description_data, columns=description_columns)
 
 # Create a New Excel Workbook to Export Data 
