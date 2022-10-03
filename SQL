@@ -1,0 +1,86 @@
+
+/* Create table for business transactions.
+
+CREATE TABLE transactions (
+    order_number int PRIMARY KEY,
+    name VARCHAR(50),
+    email VARCHAR(50),
+    date str,
+    SKU VARCHAR(50),
+    price int,
+    quantity int
+    total int);
+
+/* Create table for shipping orders.
+
+CREATE TABLE shipment (
+    shipping_ID int PRIMARY KEY,
+    order_number int,
+    email VARCHAR(50),
+    street VARCHAR(50),
+    city VARCHAR(50),
+    state VARCHAR(50),
+    ship_method VARCHAR(50),
+    FOREIGN KEY(order_number) REFERENCES transactions(order_number);
+    
+/* Insert data into transactions table.
+
+INSERT INTO transactions VALUES 
+( 1, 'Joe', 'Joe@gmail.com', '01-01-2017', '101', 15, 2, 30) , 
+( 2, 'Susan', 'Susan@gmail.com', '01-01-2017','102', 5, 5, 25), 
+( 3, 'Adam', 'Adam@gmail.com', '01-02-2017', '103', 10, 1, 10),
+( 4, 'Zoe', 'Zoe@gmail.com', '01-02-2017', '103', 10, 10, 100),
+( 5, 'Taylor', 'Taylor@gmail.com', '01-03-2017', '102', 5, 10, 50);
+
+/* Insert data into shipment table.
+
+INSERT INTO shipment VALUES 
+( 201, 1 , 'Joe@gmail.com', 'Circle Rd', 'Miami', 'FL', 'Truck') , 
+( 202, 2, 'Susan@gmail.com', 'Triangle Rd','Houston', 'TX', 'Air'), 
+( 203, 3, 'Adam@gmail.com', 'Sunset Rd', 'New York', 'NY', 'Rail'),
+( 204, 4, 'Zoe@gmail.com', 'Sunrise Rd', 'Dallas', 'TX', 'Truck'),
+( 205, 5, 'Taylor@gmail.com', 'Palm Tree Rd', 'Chicago', 'IL', 'Truck');
+
+/* Find the total amount of orders that are above $15 .
+
+SELECT count(name) FROM transactions
+WHERE total > 15;
+
+/* Show transaction data ordered by total amount then by name.
+
+SELECT * FROM transactions
+ORDER BY total desc, name asc;
+
+/* Find the order information of transactions containing SKU 103.
+
+SELECT * FROM transactions
+WHERE SKU = 103;
+
+/* Find customer's names that begins with a vowel.
+
+SELECT name FROM transactions
+WHERE LEFT(name,1) IN ('a','e', 'i', 'o', 'u');
+
+/* Find customer's name that does not begin with a vowel.
+
+SELECT name FROM transactions
+WHERE LEFT(name,1) NOT IN ('a','e', 'i', 'o', 'u');
+
+/* Find customers who's name contains an a.
+
+SELECT name FROM transactions
+WHERE name LIKE "%a%";
+
+/* Find the names of people who chose the 'Truck' shipment method, ordered 
+by order_number ascending.
+
+SELECT transactions.name FROM transactions 
+JOIN shipment 
+ON transactions.order_number = shipment.order_number
+WHERE ship_method = 'Truck', order_number asc;
+
+/* Statistical Analysis of total order amounts.
+
+SELECT count(total),sum(total), avg(total), std(total), min(total),
+max(total) FROM transactions;
+
