@@ -8,7 +8,7 @@ CREATE TABLE transactions (
     date str,
     SKU VARCHAR(50),
     price int,
-    quantity int
+    quantity int,
     total int);
 
 /* Create table for shipping orders.
