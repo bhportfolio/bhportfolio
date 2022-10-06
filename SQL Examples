@@ -84,3 +84,22 @@ WHERE ship_method = 'Truck', order_number asc;
 SELECT count(total),sum(total), avg(total), std(total), min(total),
 max(total) FROM transactions;
 
+/* Create a Procedure to find shipment orders sent to Texas. Then execute the Procedure.
+
+CREATE PROCEDURE texasorders
+AS
+SELECT * FROM shipment
+WHERE state = 'TX'
+GO;
+
+EXEC texasorders;
+
+/* Create a case to find orders above $29.
+
+SELECT order_number, total,
+    CASE 
+        WHEN total < 29 THEN 'The order is less than $29'
+        WHEN total > 29 THEN 'The order is greater than $29'
+        ELSE ' The order is $29'
+    END
+FROM transactions;
