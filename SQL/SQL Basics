@@ -1,0 +1,99 @@
+/* Create a table for business transactions.
+
+CREATE TABLE transactions (
+    order_number INT PRIMARY KEY,
+    name VARCHAR(50),
+    email VARCHAR(50),
+    date STR,
+    SKU VARCHAR(50),
+    price INT,
+    quantity INT,
+    total INT);
+
+/* Create a table for shipping orders.
+
+CREATE TABLE shipment (
+    shipping_ID INT PRIMARY KEY,
+    order_number INT,
+    email VARCHAR(50),
+    street VARCHAR(50),
+    city VARCHAR(50),
+    state VARCHAR(50),
+    ship_method VARCHAR(50),
+    FOREIGN KEY(order_number) REFERENCES transactions(order_number);
+    
+/* Insert data into transactions table.
+
+INSERT INTO transactions VALUES 
+( 1, 'Joe', 'Joe@gmail.com', '01-01-2017', '101', 15, 2, 30) , 
+( 2, 'Susan', 'Susan@gmail.com', '01-01-2017','102', 5, 5, 25), 
+( 3, 'Adam', 'Adam@gmail.com', '01-02-2017', '103', 10, 1, 10),
+( 4, 'Zoe', 'Zoe@gmail.com', '01-02-2017', '103', 10, 10, 100),
+( 5, 'Taylor', 'Taylor@gmail.com', '01-03-2017', '102', 5, 10, 50);
+
+/* Insert data into shipment table.
+
+INSERT INTO shipment VALUES 
+( 201, 1 , 'Joe@gmail.com', 'Circle Rd', 'Miami', 'FL', 'Truck') , 
+( 202, 2, 'Susan@gmail.com', 'Triangle Rd','Houston', 'TX', 'Air'), 
+( 203, 3, 'Adam@gmail.com', 'Sunset Rd', 'New York', 'NY', 'Rail'),
+( 204, 4, 'Zoe@gmail.com', 'Sunrise Rd', 'Dallas', 'TX', 'Truck'),
+( 205, 5, 'Taylor@gmail.com', 'Palm Tree Rd', 'Chicago', 'IL', 'Truck');
+
+/* Update Joe's order quantity to 3.
+
+UPDATE transactions SET quantity = 3 
+WHERE name = 'Joe';
+
+/* DELETE Zoe's order.
+
+DELETE FROM transactions WHERE name = 'Zoe';
+
+/* Alter the transactions table to include a review column.
+
+ALTER TABLE transactions ADD review INT;
+
+/* Index the transactions table based on the order number.
+
+CREATE INDEX order_index ON transactions(order_number);
+
+/* Find the total amount of orders that is above $15.
+
+SELECT count(name) FROM transactions
+WHERE total > 15;
+
+/* Show transaction data ordered by total amount, then by name.
+
+SELECT * FROM transactions
+ORDER BY total DESC, name ASC;
+
+/* Find the order information of transactions containing SKU 103.
+
+SELECT * FROM transactions
+WHERE SKU = 103;
+
+/* Find customer's names that begins with a vowel.
+
+SELECT name FROM transactions
+WHERE LEFT(name,1) IN ('a','e', 'i', 'o', 'u');
+
+/* Find customer's name that does not begin with a vowel.
+
+SELECT name FROM transactions
+WHERE LEFT(name,1) NOT IN ('a','e', 'i', 'o', 'u');
+
+/* Find customer names that contain an a. Limit the results to 2.
+
+SELECT name FROM transactions
+WHERE name LIKE "%a%"
+LIMIT 2;
+
+/* Find order information of order totals between $20 and $80.
+
+SELECT * FROM transactions
+WHERE total BETWEEN 20 AND 80;
+
+/* Performace a statistical analysis of total order amounts.
+
+SELECT COUNT(total), SUM(total), AVG(total), STD(total), MIN(total),
+MAX(total) FROM transactions;
