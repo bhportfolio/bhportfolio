@@ -103,3 +103,8 @@ SELECT order_number, total,
         ELSE ' The order is $29'
     END
 FROM transactions;
+
+/* Find the quantity of the largest total order using a nested select statement.
+
+SELECT quantity FROM transactions
+WHERE total = (SELECT max(total) FROM transactions);
