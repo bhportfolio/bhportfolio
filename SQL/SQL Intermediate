@@ -1,0 +1,64 @@
+/* Find the shipment method under the alias method.
+
+SELECT ship_method AS method FROM shipment;
+
+/* Find quantity of the largest total order using a nested select statement.
+
+SELECT quantity FROM transactions
+WHERE total = (SELECT max(total) FROM transactions);
+
+/* Find customer names and their shipment state. 
+
+SELECT transactions.name, shipment.state FROM transactions
+FULL OUTER JOIN shipment 
+ON transactions.order_number = shipment.order_number
+ORDER BY transactions.name ASC;
+
+/* Find customer names and their shipment method.
+
+SELECT transactions.name, shipment.ship_method FROM transactions
+LEFT JOIN shipment 
+ON transactions.order_number = shipment.order_number
+ORDER BY shipment.ship_method DESC;
+
+/* Find the names of people who chose the 'Truck' shipment method, ordered 
+by order_number ascending.
+
+SELECT transactions.name FROM transactions 
+JOIN shipment 
+ON transactions.order_number = shipment.order_number
+WHERE ship_method = 'Truck'
+ORDER BY order_number ASC;
+
+/* Find the email addresses from the transactions and shipments table.
+
+SELECT email FROM transactions
+UNION
+SELECT email FROM shipment;
+
+/* Find the number of orders in each state. Each state must have 2 or more orders.
+
+SELECT COUNT(shipping_ID), state FROM shipment
+GROUP BY state
+HAVING COUNT(shipping_ID) >= 2;
+
+/* Create a procedure to find shipment orders sent to Texas, then execute the procedure.
+
+CREATE PROCEDURE texasorders
+AS
+SELECT * FROM shipment
+WHERE state = 'TX'
+GO;
+
+EXEC texasorders;
+
+/* Create a case to find orders above, below, and equal to $29.
+
+SELECT order_number, total,
+    CASE 
+        WHEN total < 29 THEN 'The order is less than $29'
+        WHEN total > 29 THEN 'The order is greater than $29'
+        ELSE ' The order is $29'
+    END AS Order_Result
+FROM transactions;
+
