@@ -62,3 +62,27 @@ SELECT order_number, total,
     END AS Order_Result
 FROM transactions;
 
+/* Create a view showing transactions email and date. Then display the created view.
+
+CREATE VIEW email_and_dates
+AS 
+SELECT email, date FROM transactions;
+
+SELECT * FROM email_and_dates;
+
+/* Create a common table expression of shipment locations. Then display the CTE.
+
+WITH 
+shipment_locations
+AS
+(SELECT street, city, state FROM shipment);
+
+SELECT * FROM shipment_locations;
+
+/* Create a trigger that deletes the shipment when order number 1 cancels a transactions.
+
+CREATE TRIGGER delete_shipment
+AFTER DELETE 
+ON transactions
+FOR EACH ROW 
+DELETE FROM shipment WHERE order_number = 1; 
